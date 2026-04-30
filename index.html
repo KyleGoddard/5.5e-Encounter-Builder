@@ -774,7 +774,7 @@ function renderParty(){
       <button class="pc-remove" title="Remove">×</button>
     `;
     const inputs = row.querySelectorAll('.pc-input, .pc-level');
-    inputs[0].addEventListener('input', e => { state.party[i].name = e.target.value; });
+    inputs[0].addEventListener('input', e => { state.party[i].name = e.target.value; saveState(); });
     inputs[1].addEventListener('change', e => { state.party[i].level = +e.target.value; updateAll(); });
     row.querySelector('.pc-remove').addEventListener('click', () => {
       state.party.splice(i,1);
@@ -1337,16 +1337,41 @@ function closeStatBlock() {
 }
 
 // === STATE PERSISTENCE ===
+// Persist the adventuring party to localStorage so it survives page refreshes.
+const STORAGE_KEY = 'encounterBuilder.party.v1';
+
 function saveState(){
   try {
-    const toSave = { party: state.party, encounter: state.encounter };
-    // Note: localStorage not used per spec — using in-memory only.
-    // (If localStorage were supported, would save here.)
-  } catch(e){}
+    if(typeof localStorage === 'undefined') return;
+    const toSave = { party: state.party };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch(e){
+    // Storage may be unavailable (private mode, quota, etc.) — fail silently.
+    console.warn('Could not save party to localStorage:', e);
+  }
 }
 
 function loadState(){
-  // No-op for now; keep defaults.
+  try {
+    if(typeof localStorage === 'undefined') return;
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    // Validate: must be an array of {name, level} objects with sane levels.
+    if(!data || !Array.isArray(data.party)) return;
+    const cleaned = data.party
+      .filter(pc => pc && typeof pc === 'object')
+      .map(pc => ({
+        name: typeof pc.name === 'string' ? pc.name : 'Character',
+        level: Math.max(1, Math.min(20, parseInt(pc.level) || 1)),
+      }))
+      .slice(0, 12); // respect the 12-character cap
+    if(cleaned.length > 0){
+      state.party = cleaned;
+    }
+  } catch(e){
+    console.warn('Could not load party from localStorage:', e);
+  }
 }
 
 // === EVENT WIRING ===

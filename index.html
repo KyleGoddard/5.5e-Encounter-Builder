@@ -201,7 +201,7 @@
   /* Print styles */
   @media print {
     body{background:white;color:black;height:auto;overflow:visible}
-    #header,#main,#print-controls,#sidebar,#monster-list,#encounter-pane{display:none !important}
+    #header,#main,#print-controls,#sidebar,#monster-list,#encounter-pane,#import-pane{display:none !important}
     #print-pane{display:block !important;background:white;padding:0;overflow:visible;height:auto}
     #print-doc{box-shadow:none;border:none;max-width:100%;padding:20px}
     #print-doc h1,#print-doc h2{color:#000;border-color:#000}
@@ -252,6 +252,34 @@
   /* Eye button in the monster list */
   .eye-btn{background:#1a1422;border:1px solid #2e2848;color:#7a6a9a;width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:13px;line-height:1;flex-shrink:0;font-family:inherit;padding:0;display:flex;align-items:center;justify-content:center}
   .eye-btn:hover{background:#26183a;color:#b898e8;border-color:#4a3870}
+
+  /* Imported creature marker */
+  .imported-badge{display:inline-flex;align-items:center;justify-content:center;color:#c08040;font-size:13px;line-height:1;margin-left:6px;vertical-align:middle;cursor:default}
+  .imported-tag{display:inline-block;background:#2a1f10;color:#c08040;border:1px solid #4a3018;border-radius:3px;padding:1px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+
+  /* IMPORT PANE */
+  #import-pane{flex:1;overflow-y:auto;padding:30px;display:none;background:#0a0a0e;color:#c8c0b4}
+  #import-pane.visible{display:block}
+  .import-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+  .import-card{background:#13111a;border:1px solid #201e2a;border-radius:8px;padding:20px}
+  .import-card h2{font-size:13px;color:#776a5a;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;font-weight:400}
+  .import-card h2 .accent{color:#c84040}
+  .import-help{font-size:12px;color:#776a5a;line-height:1.6;margin-bottom:12px}
+  .import-help code{background:#1c1a24;color:#c08040;padding:1px 5px;border-radius:3px;border:1px solid #2a2830;font-family:Consolas,Menlo,monospace;font-size:11px}
+  #import-textarea{width:100%;min-height:220px;background:#0d0d11;border:1px solid #2e2a3a;color:#d8d0c4;border-radius:6px;padding:12px;font-family:Consolas,Menlo,monospace;font-size:12px;line-height:1.5;outline:none;resize:vertical;box-sizing:border-box}
+  #import-textarea:focus{border-color:#c84040}
+  .import-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+  #import-status{flex:1;font-size:12px;color:#776a5a;min-height:18px}
+  #import-status.error{color:#e08070}
+  #import-status.success{color:#90c060}
+  .import-list{display:flex;flex-direction:column;gap:6px}
+  .import-list-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#1c1a24;border:1px solid #2a2830;border-radius:6px}
+  .import-list-name{flex:1;font-size:13px;color:#d8d0c4;font-weight:600}
+  .import-list-meta{font-size:11px;color:#776a5a}
+  .import-list-empty{padding:18px;color:#443c30;text-align:center;font-size:13px;font-style:italic;border:1px dashed #2a2830;border-radius:6px}
+  .import-del-btn{background:none;border:1px solid #2e2a3a;color:#665e4e;border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;font-family:inherit;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .import-del-btn:hover{color:#c84040;border-color:#5a2828}
+  .import-example{background:#0d0d11;border:1px solid #2a2830;border-radius:6px;padding:10px;font-family:Consolas,Menlo,monospace;font-size:11px;color:#a89880;white-space:pre;overflow-x:auto;max-height:200px;overflow-y:auto;line-height:1.4}
 </style>
 </head>
 <body>
@@ -269,6 +297,7 @@
   </div>
   <div id="tabs">
     <button class="tab-btn active" data-tab="build">Build</button>
+    <button class="tab-btn" data-tab="import">Import</button>
     <button class="tab-btn" data-tab="print">Print</button>
   </div>
 </div>
@@ -411,6 +440,38 @@
     </div>
   </div>
 
+  <!-- IMPORT PANE -->
+  <div id="import-pane">
+    <div class="import-wrap">
+      <div class="import-card">
+        <h2>Import <span class="accent">creatures</span></h2>
+        <div class="import-help">
+          Paste a JSON object containing a <code>monsters</code> array (or a bare array of creatures), then click <strong>Import</strong>. Imported creatures persist in your browser and are marked with <span class="imported-badge" style="margin:0">✦</span> in the creature list. Names that collide with the SRD set or with already-imported creatures are skipped.
+        </div>
+        <textarea id="import-textarea" placeholder='Paste JSON here, e.g. { "monsters": [ { "name": "Custom Beast", "size": "Medium", "type": "Beast", ... } ] }' spellcheck="false"></textarea>
+        <div class="import-actions">
+          <button class="action-btn action-btn-primary" id="btn-import-do">Import</button>
+          <button class="action-btn" id="btn-import-clear">Clear textarea</button>
+          <button class="small-btn" id="btn-import-example">Insert example</button>
+          <div id="import-status"></div>
+        </div>
+      </div>
+
+      <div class="import-card">
+        <h2>Imported <span class="accent">creatures</span> <span id="import-count" style="color:#776a5a;font-size:11px;margin-left:8px"></span></h2>
+        <div id="import-list" class="import-list"></div>
+      </div>
+
+      <div class="import-card">
+        <h2>Schema <span class="accent">reference</span></h2>
+        <div class="import-help">
+          Required: <code>name</code>, <code>size</code>, <code>type</code>, <code>alignment</code>, <code>ac</code>, <code>hp</code> (object with <code>average</code>), <code>cr</code>, six abilities (<code>str</code>, <code>dex</code>, <code>con</code>, <code>int</code>, <code>wis</code>, <code>cha</code>). Recommended: <code>xp</code>, <code>speed</code>, <code>initiative</code>, <code>proficiency_bonus</code>, ability modifiers/saves (e.g. <code>str_mod</code>, <code>str_save</code>), <code>senses</code>, <code>languages</code>, and arrays for <code>traits</code>, <code>actions</code>, <code>bonus_actions</code>, <code>reactions</code>, <code>legendary_actions</code>.
+        </div>
+        <div class="import-example" id="import-schema-example"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- PRINT PANE -->
   <div id="print-pane">
     <div id="print-doc"></div>
@@ -444,6 +505,9 @@
 // === MONSTER DATA — loaded from srd_creatures.json ===
 let MONSTERS = [];
 let MONSTER_MAP = {}; // name → raw creature data for stat block modal
+let SRD_NAMES = new Set(); // names of standard creatures — used to block deletion
+let IMPORTED_NAMES = new Set(); // names of user-imported creatures
+const CUSTOM_STORAGE_KEY = 'encounterBuilder.customCreatures.v1';
 
 
 // === MONSTER DATA — embedded from srd_creatures.json ===
@@ -485,7 +549,13 @@ async function loadMonsters() {
     monstersLoaded = true;
     // Build name→raw lookup for stat block modal
     (data.monsters || []).forEach(m => { MONSTER_MAP[m.name] = m; });
+    // Snapshot the names of standard (SRD) creatures so we can distinguish
+    // them from imported creatures and prevent their deletion.
+    SRD_NAMES = new Set(Object.keys(MONSTER_MAP));
     console.log(`Loaded ${MONSTERS.length} creatures from embedded data`);
+
+    // Merge any user-imported creatures from localStorage on top of the SRD set.
+    loadCustomCreatures();
     
     // Initialize the app after loading
     populateFilterOptions();
@@ -724,9 +794,12 @@ function renderMonsterList(){
     const row = document.createElement('div');
     row.className = 'monster-item';
     const subtype = m.subtype ? ` (${m.subtype})` : '';
+    const importedMark = IMPORTED_NAMES.has(m.name)
+      ? `<span class="imported-badge" title="Imported creature">✦</span>`
+      : '';
     row.innerHTML = `
       <div class="monster-info">
-        <div class="monster-name">${escapeHTML(m.name)}</div>
+        <div class="monster-name">${escapeHTML(m.name)}${importedMark}</div>
         <div class="monster-meta">
           <span class="t-${m.type}">${escapeHTML(m.size)} ${escapeHTML(m.type)}${escapeHTML(subtype)}</span>
         </div>
@@ -1218,17 +1291,32 @@ function renderPrintView(){
 function switchTab(tab){
   state.tab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  const sidebar = document.getElementById('main').querySelector('#sidebar');
+  const monsterList = document.getElementById('main').querySelector('#monster-list');
+  const encounterPane = document.getElementById('encounter-pane');
+  const printPane = document.getElementById('print-pane');
+  const importPane = document.getElementById('import-pane');
+
   if(tab === 'print'){
-    document.getElementById('main').querySelector('#sidebar').style.display = 'none';
-    document.getElementById('main').querySelector('#monster-list').style.display = 'none';
-    document.getElementById('encounter-pane').style.display = 'none';
-    document.getElementById('print-pane').classList.add('visible');
+    sidebar.style.display = 'none';
+    monsterList.style.display = 'none';
+    encounterPane.style.display = 'none';
+    if(importPane) importPane.classList.remove('visible');
+    printPane.classList.add('visible');
     renderPrintView();
+  } else if(tab === 'import'){
+    sidebar.style.display = 'none';
+    monsterList.style.display = 'none';
+    encounterPane.style.display = 'none';
+    printPane.classList.remove('visible');
+    if(importPane) importPane.classList.add('visible');
+    renderImportList();
   } else {
-    document.getElementById('main').querySelector('#sidebar').style.display = '';
-    document.getElementById('main').querySelector('#monster-list').style.display = '';
-    document.getElementById('encounter-pane').style.display = '';
-    document.getElementById('print-pane').classList.remove('visible');
+    sidebar.style.display = '';
+    monsterList.style.display = '';
+    encounterPane.style.display = '';
+    printPane.classList.remove('visible');
+    if(importPane) importPane.classList.remove('visible');
   }
 }
 
@@ -1484,7 +1572,367 @@ function wireEvents(){
   printPane.insertBefore(ctrls, printPane.firstChild);
   document.getElementById('back-from-print').addEventListener('click', () => switchTab('build'));
   document.getElementById('do-print').addEventListener('click', () => window.print());
+
+  // Import pane wiring
+  const importTextarea = document.getElementById('import-textarea');
+  const importStatus = document.getElementById('import-status');
+  const setStatus = (msg, kind) => {
+    importStatus.textContent = msg || '';
+    importStatus.className = kind || '';
+  };
+  document.getElementById('btn-import-do').addEventListener('click', () => {
+    const text = importTextarea.value.trim();
+    if(!text){ setStatus('Paste some JSON first.', 'error'); return; }
+    const result = importCreaturesFromJSON(text);
+    if(result.added > 0){
+      const errPart = result.errors.length ? ` (${result.errors.length} skipped)` : '';
+      setStatus(`Imported ${result.added} creature${result.added === 1 ? '' : 's'}${errPart}.`, 'success');
+      showToast(`Imported ${result.added} creature${result.added === 1 ? '' : 's'}`);
+      importTextarea.value = '';
+      renderImportList();
+      updateAll();
+      if(result.errors.length){
+        console.warn('Some creatures were skipped:', result.errors);
+      }
+    } else {
+      const msg = result.errors[0] || 'No creatures imported.';
+      setStatus(msg, 'error');
+    }
+  });
+  document.getElementById('btn-import-clear').addEventListener('click', () => {
+    importTextarea.value = '';
+    setStatus('', '');
+    importTextarea.focus();
+  });
+  document.getElementById('btn-import-example').addEventListener('click', () => {
+    importTextarea.value = IMPORT_EXAMPLE_JSON;
+    setStatus('Example loaded — review, then click Import.', '');
+  });
+  // Populate the schema example panel.
+  const schemaEx = document.getElementById('import-schema-example');
+  if(schemaEx) schemaEx.textContent = IMPORT_EXAMPLE_JSON;
+  // Initial render of the imported-creatures list.
+  renderImportList();
 }
+
+// === CUSTOM (IMPORTED) CREATURES ===
+// User-imported creatures live in localStorage under CUSTOM_STORAGE_KEY as a
+// JSON array of raw creature objects (matching the SRD schema).
+
+// Required top-level fields a creature must have to pass validation.
+const CUSTOM_REQUIRED_FIELDS = ['name','size','type','alignment','ac','hp','cr','str','dex','con','int','wis','cha'];
+
+function validateCreature(c, existingNames){
+  // Returns {ok:true, creature:normalized} or {ok:false, error:string}.
+  if(!c || typeof c !== 'object' || Array.isArray(c)){
+    return {ok:false, error:'Creature must be an object.'};
+  }
+  for(const f of CUSTOM_REQUIRED_FIELDS){
+    if(c[f] === undefined || c[f] === null || c[f] === ''){
+      return {ok:false, error:`Missing required field: "${f}"`};
+    }
+  }
+  if(typeof c.name !== 'string' || !c.name.trim()){
+    return {ok:false, error:'Field "name" must be a non-empty string.'};
+  }
+  if(typeof c.ac !== 'number' && !(typeof c.ac === 'string' && /^\d+/.test(c.ac))){
+    return {ok:false, error:`"${c.name}": field "ac" must be a number.`};
+  }
+  // hp must be either a number or {average, formula?}
+  if(typeof c.hp === 'number'){
+    c = {...c, hp:{average:c.hp, formula:String(c.hp)}};
+  } else if(typeof c.hp === 'object' && c.hp !== null){
+    if(typeof c.hp.average !== 'number'){
+      return {ok:false, error:`"${c.name}": field "hp.average" must be a number.`};
+    }
+  } else {
+    return {ok:false, error:`"${c.name}": field "hp" must be a number or {average, formula}.`};
+  }
+  // Abilities must be numeric.
+  for(const a of ['str','dex','con','int','wis','cha']){
+    if(typeof c[a] !== 'number'){
+      return {ok:false, error:`"${c.name}": ability "${a}" must be a number.`};
+    }
+  }
+  // CR must be parseable.
+  const crStr = String(c.cr);
+  let crv;
+  if(crStr.includes('/')){
+    const [a,b] = crStr.split('/');
+    crv = +a / +b;
+  } else {
+    crv = +crStr;
+  }
+  if(isNaN(crv)){
+    return {ok:false, error:`"${c.name}": field "cr" is not a valid challenge rating (e.g. "5", "1/2").`};
+  }
+  // Name uniqueness.
+  if(existingNames && existingNames.has(c.name)){
+    return {ok:false, error:`A creature named "${c.name}" already exists. Skipping.`};
+  }
+  // Normalize: fill in optional fields with sensible defaults so the rest of
+  // the app (filters, stat block) renders without errors.
+  const sign = (n) => n >= 0 ? `+${n}` : `${n}`;
+  const abilMod = (score) => Math.floor((score - 10) / 2);
+  const norm = {
+    name: c.name,
+    size: String(c.size),
+    type: String(c.type),
+    subtype: c.subtype || null,
+    alignment: String(c.alignment),
+    ac: typeof c.ac === 'number' ? c.ac : parseInt(c.ac),
+    initiative: c.initiative || sign(abilMod(c.dex)),
+    hp: c.hp,
+    speed: c.speed || '30 ft.',
+    str: c.str, dex: c.dex, con: c.con, int: c.int, wis: c.wis, cha: c.cha,
+    str_mod: c.str_mod || sign(abilMod(c.str)),
+    dex_mod: c.dex_mod || sign(abilMod(c.dex)),
+    con_mod: c.con_mod || sign(abilMod(c.con)),
+    int_mod: c.int_mod || sign(abilMod(c.int)),
+    wis_mod: c.wis_mod || sign(abilMod(c.wis)),
+    cha_mod: c.cha_mod || sign(abilMod(c.cha)),
+    str_save: c.str_save || sign(abilMod(c.str)),
+    dex_save: c.dex_save || sign(abilMod(c.dex)),
+    con_save: c.con_save || sign(abilMod(c.con)),
+    int_save: c.int_save || sign(abilMod(c.int)),
+    wis_save: c.wis_save || sign(abilMod(c.wis)),
+    cha_save: c.cha_save || sign(abilMod(c.cha)),
+    skills: c.skills || null,
+    resistances: c.resistances || null,
+    immunities: c.immunities || null,
+    vulnerabilities: c.vulnerabilities || null,
+    senses: c.senses || `Passive Perception ${10 + abilMod(c.wis)}`,
+    languages: c.languages || '—',
+    cr: crStr,
+    xp: c.xp != null ? String(c.xp) : '0',
+    proficiency_bonus: c.proficiency_bonus || '+2',
+    traits: Array.isArray(c.traits) ? c.traits : [],
+    actions: Array.isArray(c.actions) ? c.actions : [],
+    bonus_actions: Array.isArray(c.bonus_actions) ? c.bonus_actions : [],
+    reactions: Array.isArray(c.reactions) ? c.reactions : [],
+    legendary_actions: Array.isArray(c.legendary_actions) ? c.legendary_actions : [],
+    lair_actions: Array.isArray(c.lair_actions) ? c.lair_actions : [],
+    mythic_actions: Array.isArray(c.mythic_actions) ? c.mythic_actions : [],
+  };
+  return {ok:true, creature:norm};
+}
+
+// Add a single validated/normalized creature to the in-memory monster set.
+function addCreatureInMemory(raw){
+  const crToVal = (cr) => {
+    const s = String(cr);
+    if(s.includes('/')){const[a,b]=s.split('/');return +a/+b;}
+    return +s;
+  };
+  MONSTER_MAP[raw.name] = raw;
+  IMPORTED_NAMES.add(raw.name);
+  MONSTERS.push({
+    name: raw.name,
+    size: raw.size,
+    type: raw.type,
+    subtype: raw.subtype || null,
+    alignment: raw.alignment,
+    cr: String(raw.cr),
+    crv: crToVal(raw.cr),
+    xp: parseInt(raw.xp) || 0,
+    ac: raw.ac || null,
+    hp: raw.hp?.average || null,
+    hp_dice: raw.hp?.formula || null,
+    envs: getEnvironments(raw),
+  });
+}
+
+// Remove an imported creature from in-memory state. Returns true on success.
+function removeCreatureInMemory(name){
+  if(!IMPORTED_NAMES.has(name)) return false;
+  delete MONSTER_MAP[name];
+  IMPORTED_NAMES.delete(name);
+  const idx = MONSTERS.findIndex(m => m.name === name);
+  if(idx >= 0) MONSTERS.splice(idx, 1);
+  // Also remove from the encounter if present.
+  for(let i = state.encounter.length - 1; i >= 0; i--){
+    if(state.encounter[i].name === name) state.encounter.splice(i, 1);
+  }
+  return true;
+}
+
+function loadCustomCreatures(){
+  try {
+    if(typeof localStorage === 'undefined') return;
+    const raw = localStorage.getItem(CUSTOM_STORAGE_KEY);
+    if(!raw) return;
+    const arr = JSON.parse(raw);
+    if(!Array.isArray(arr)) return;
+    const seen = new Set(Object.keys(MONSTER_MAP));
+    for(const c of arr){
+      const r = validateCreature(c, seen);
+      if(r.ok){
+        addCreatureInMemory(r.creature);
+        seen.add(r.creature.name);
+      } else {
+        console.warn('Skipped invalid stored creature:', r.error);
+      }
+    }
+  } catch(e){
+    console.warn('Could not load custom creatures from localStorage:', e);
+  }
+}
+
+function saveCustomCreatures(){
+  try {
+    if(typeof localStorage === 'undefined') return;
+    const arr = [];
+    for(const name of IMPORTED_NAMES){
+      if(MONSTER_MAP[name]) arr.push(MONSTER_MAP[name]);
+    }
+    localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(arr));
+  } catch(e){
+    console.warn('Could not save custom creatures to localStorage:', e);
+    showToast('Could not save imported creatures: ' + e.message, true);
+  }
+}
+
+// Try to import creatures from a pasted JSON string. Returns a summary object.
+function importCreaturesFromJSON(text){
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch(e){
+    return {added:0, errors:['Invalid JSON: ' + e.message]};
+  }
+  // Accept either {monsters:[...]} or a bare array.
+  let arr;
+  if(Array.isArray(parsed)) arr = parsed;
+  else if(parsed && Array.isArray(parsed.monsters)) arr = parsed.monsters;
+  else if(parsed && typeof parsed === 'object' && parsed.name) arr = [parsed]; // single creature
+  else return {added:0, errors:['JSON must be an array of creatures, an object with a "monsters" array, or a single creature object.']};
+
+  if(arr.length === 0) return {added:0, errors:['No creatures found in the input.']};
+
+  const seen = new Set(Object.keys(MONSTER_MAP));
+  let added = 0;
+  const errors = [];
+  for(const c of arr){
+    const r = validateCreature(c, seen);
+    if(r.ok){
+      addCreatureInMemory(r.creature);
+      seen.add(r.creature.name);
+      added++;
+    } else {
+      errors.push(r.error);
+    }
+  }
+  if(added > 0){
+    saveCustomCreatures();
+    // Filter dropdowns may need new options (e.g. a new type or alignment).
+    refreshFilterOptions();
+  }
+  return {added, errors};
+}
+
+// Re-populate filter dropdowns to include any new types/sizes/alignments
+// introduced by imported creatures while preserving the user's selections.
+function refreshFilterOptions(){
+  const typeSel = document.getElementById('filter-type');
+  const sizeSel = document.getElementById('filter-size');
+  const alignSel = document.getElementById('filter-alignment');
+  if(!typeSel || !sizeSel || !alignSel) return;
+  const prevType = typeSel.value, prevSize = sizeSel.value, prevAlign = alignSel.value;
+
+  // Type
+  typeSel.innerHTML = '<option value="">Any type</option>';
+  [...new Set(MONSTERS.map(m => m.type))].sort().forEach(t => {
+    const o = document.createElement('option'); o.value = t; o.textContent = t;
+    typeSel.appendChild(o);
+  });
+  typeSel.value = [...typeSel.options].some(o => o.value === prevType) ? prevType : '';
+
+  // Size
+  const sizeOrder = ['Tiny','Small','Medium','Medium or Small','Large','Huge','Gargantuan'];
+  sizeSel.innerHTML = '<option value="">Any size</option>';
+  [...new Set(MONSTERS.map(m => m.size))]
+    .sort((a,b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b))
+    .forEach(s => {
+      const o = document.createElement('option'); o.value = s; o.textContent = s;
+      sizeSel.appendChild(o);
+    });
+  sizeSel.value = [...sizeSel.options].some(o => o.value === prevSize) ? prevSize : '';
+
+  // Alignment
+  alignSel.innerHTML = '<option value="">Any alignment</option>';
+  [...new Set(MONSTERS.map(m => m.alignment))].sort().forEach(a => {
+    const o = document.createElement('option'); o.value = a; o.textContent = a;
+    alignSel.appendChild(o);
+  });
+  alignSel.value = [...alignSel.options].some(o => o.value === prevAlign) ? prevAlign : '';
+}
+
+// Render the list of currently-imported creatures in the Import tab.
+function renderImportList(){
+  const list = document.getElementById('import-list');
+  const count = document.getElementById('import-count');
+  if(!list) return;
+  const names = Array.from(IMPORTED_NAMES).sort((a,b) => a.localeCompare(b));
+  count.textContent = names.length === 0 ? '' : `(${names.length})`;
+  if(names.length === 0){
+    list.innerHTML = '<div class="import-list-empty">No imported creatures yet. Paste JSON above to add some.</div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  for(const name of names){
+    const m = MONSTER_MAP[name];
+    if(!m) continue;
+    const row = document.createElement('div');
+    row.className = 'import-list-row';
+    row.innerHTML = `
+      <span class="imported-tag">✦ Imported</span>
+      <div class="import-list-name">${escapeHTML(m.name)}</div>
+      <div class="import-list-meta">${escapeHTML(m.size)} ${escapeHTML(m.type)} · CR ${escapeHTML(String(m.cr))}</div>
+      <button class="import-del-btn" title="Delete imported creature">🗑</button>
+    `;
+    row.querySelector('.import-del-btn').addEventListener('click', () => {
+      if(!confirm(`Delete imported creature "${m.name}"? This will also remove any instances of it from the current encounter.`)) return;
+      if(removeCreatureInMemory(m.name)){
+        saveCustomCreatures();
+        refreshFilterOptions();
+        renderImportList();
+        updateAll();
+        showToast(`Deleted "${m.name}"`);
+      }
+    });
+    frag.appendChild(row);
+  }
+  list.innerHTML = '';
+  list.appendChild(frag);
+}
+
+// Example JSON shown in the Import tab to guide users.
+const IMPORT_EXAMPLE_JSON = `{
+  "monsters": [
+    {
+      "name": "Frost Drake",
+      "size": "Large",
+      "type": "Dragon",
+      "alignment": "Chaotic Evil",
+      "ac": 16,
+      "initiative": "+2",
+      "hp": { "average": 95, "formula": "10d10 + 40" },
+      "speed": "40 ft., fly 80 ft.",
+      "str": 19, "dex": 14, "con": 19, "int": 8, "wis": 11, "cha": 12,
+      "cr": "5",
+      "xp": "1800",
+      "senses": "Darkvision 60 ft.; Passive Perception 10",
+      "languages": "Draconic",
+      "traits": [
+        { "name": "Ice Walk", "description": "The drake can move across icy surfaces without making an ability check." }
+      ],
+      "actions": [
+        { "name": "Bite", "description": "Melee Attack Roll: +7, reach 10 ft. Hit: 12 (2d6 + 4) Piercing damage plus 4 (1d8) Cold damage." }
+      ]
+    }
+  ]
+}`;
+
 
 // === BOOT ===
 // Load creatures asynchronously from srd_creatures.json

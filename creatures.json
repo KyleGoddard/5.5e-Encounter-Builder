@@ -7450,7 +7450,7 @@
       "bonus_actions": [
         {
           "name": "Magic of the Spider Queen (Recharge 5-6)",
-          "description": "The drider casts Darkness, Faerie Fire, or Web, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 14). Druid Druid Medium or Small Humanoid (Druid), Neutral Gear Studded Leather Armor"
+          "description": "The drider casts Darkness, Faerie Fire, or Web, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 14)."
         }
       ],
       "reactions": [],

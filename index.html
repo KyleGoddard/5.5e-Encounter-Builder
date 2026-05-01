@@ -157,6 +157,7 @@
   #print-doc .ability-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;text-align:center}
   #print-doc .ability-table th{background:rgba(139,58,42,0.10);color:#5c1e1e;padding:3px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600;border:1px solid #c0a070}
   #print-doc .ability-table td{padding:3px 6px;border:1px solid #c0a070;color:#1a1410}
+  #print-doc .ability-table .save-row td{color:#5c1e1e;font-size:10px;font-weight:600;background:rgba(139,58,42,0.05)}
   #print-doc .stat-block-detail{font-size:12px;color:#1a1410;margin:2px 0}
   #print-doc .stat-block-detail strong{color:#5c1e1e}
   #print-doc .action-entry{margin:4px 0;font-size:12px;color:#1a1410;padding-left:10px;border-left:2px solid rgba(139,58,42,0.2)}
@@ -238,6 +239,7 @@
   .sb-ability-name{font-size:10px;color:#776a5a;text-transform:uppercase;letter-spacing:1px}
   .sb-ability-score{font-size:18px;color:#e8c87a;font-weight:700;line-height:1.2}
   .sb-ability-mod{font-size:12px;color:#a89880}
+  .sb-ability-save{font-size:11px;color:#c87050;font-weight:600;margin-top:1px}
   .sb-pills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
   .sb-pill{background:#13111a;border:1px solid #201e2a;border-radius:5px;padding:6px 12px;text-align:center;min-width:70px}
   .sb-pill-key{font-size:10px;color:#554e40;text-transform:uppercase;letter-spacing:1px}
@@ -1062,10 +1064,6 @@ function buildStatBlock(m){
   const hpStr = m.hp ? `${m.hp.average} (${m.hp.formula})` : '—';
 
   const details = [];
-  const proficientSaves = ['str','dex','con','int','wis','cha']
-    .filter(k => m[`${k}_save`] !== undefined && m[`${k}_save`] !== m[`${k}_mod`])
-    .map(k => `${k.toUpperCase()} ${m[`${k}_save`]}`);
-  if(proficientSaves.length > 0) details.push(`<div class="stat-block-detail"><strong>Saving Throws</strong> ${escapeHTML(proficientSaves.join(', '))}</div>`);
   if(m.skills)         details.push(`<div class="stat-block-detail"><strong>Skills</strong> ${escapeHTML(m.skills)}</div>`);
   if(m.resistances)    details.push(`<div class="stat-block-detail"><strong>Resistances</strong> ${escapeHTML(m.resistances)}</div>`);
   if(m.immunities)     details.push(`<div class="stat-block-detail"><strong>Immunities</strong> ${escapeHTML(m.immunities)}</div>`);
@@ -1107,15 +1105,28 @@ function buildStatBlock(m){
       <span><strong>Speed</strong> ${escapeHTML(m.speed || '—')}</span>
     </div>
     <table class="ability-table">
-      <thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>
-      <tbody><tr>
+      <thead>
+        <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
+        <tr class="save-label-row"><th colspan="6" style="text-align:left;letter-spacing:0;font-weight:400;color:#7a6040;font-size:9px">Score (mod) · Save</th></tr>
+      </thead>
+      <tbody>
+      <tr>
         <td>${m.str} (${m.str_mod})</td>
         <td>${m.dex} (${m.dex_mod})</td>
         <td>${m.con} (${m.con_mod})</td>
         <td>${m.int} (${m.int_mod})</td>
         <td>${m.wis} (${m.wis_mod})</td>
         <td>${m.cha} (${m.cha_mod})</td>
-      </tr></tbody>
+      </tr>
+      <tr class="save-row">
+        <td>${m.str_save||m.str_mod}</td>
+        <td>${m.dex_save||m.dex_mod}</td>
+        <td>${m.con_save||m.con_mod}</td>
+        <td>${m.int_save||m.int_mod}</td>
+        <td>${m.wis_save||m.wis_mod}</td>
+        <td>${m.cha_save||m.cha_mod}</td>
+      </tr>
+      </tbody>
     </table>
     <hr class="stat-block-divider">
     ${details.join('')}
@@ -1387,12 +1398,12 @@ function showStatBlock(m) {
           <div class="sb-ability-name">${a.label}</div>
           <div class="sb-ability-score">${a.score}</div>
           <div class="sb-ability-mod">${a.mod}</div>
+          <div class="sb-ability-save">${a.save||a.mod}</div>
         </div>`).join('')}
     </div>
 
     <div class="sb-divider"></div>
 
-    ${savesStr ? `<div class="sb-prop-row"><span class="sb-prop-key">Saves</span><span class="sb-prop-val">${escapeHTML(savesStr)}</span></div>` : ''}
     ${raw.skills ? `<div class="sb-prop-row"><span class="sb-prop-key">Skills</span><span class="sb-prop-val">${escapeHTML(raw.skills)}</span></div>` : ''}
     ${raw.resistances ? `<div class="sb-prop-row"><span class="sb-prop-key">Resistances</span><span class="sb-prop-val">${escapeHTML(raw.resistances)}</span></div>` : ''}
     ${raw.immunities ? `<div class="sb-prop-row"><span class="sb-prop-key">Immunities</span><span class="sb-prop-val">${escapeHTML(raw.immunities)}</span></div>` : ''}

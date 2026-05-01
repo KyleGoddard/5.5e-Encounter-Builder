@@ -513,7 +513,7 @@ const CUSTOM_STORAGE_KEY = 'encounterBuilder.customCreatures.v1';
 
 async function loadMonsters() {
   try {
-    const response = await fetch('creatures.json');
+    const response = await fetch('creatures_v2.json');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     
@@ -551,7 +551,7 @@ async function loadMonsters() {
     // Snapshot the names of standard (SRD) creatures so we can distinguish
     // them from imported creatures and prevent their deletion.
     SRD_NAMES = new Set(Object.keys(MONSTER_MAP));
-    console.log(`Loaded ${MONSTERS.length} creatures from creatures.json`);
+    console.log(`Loaded ${MONSTERS.length} creatures from creatures_v2.json`);
 
     // Merge any user-imported creatures from localStorage on top of the SRD set.
     loadCustomCreatures();
@@ -1932,7 +1932,7 @@ const IMPORT_EXAMPLE_JSON = `{
 
 
 // === BOOT ===
-// Load creatures asynchronously from creatures.json
+// Load creatures asynchronously from creatures_v2.json
 loadMonsters();
 </script>
 

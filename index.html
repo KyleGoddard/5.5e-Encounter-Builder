@@ -545,7 +545,7 @@ async function loadMonsters() {
         alignment: m.alignment,
         cr: String(m.cr),
         crv: crToValue(m.cr),
-        xp: parseInt(m.xp) || 0,
+        xp: parseInt(String(m.xp).replace(/,/g,'')) || 0,
         ac: m.ac || null,
         hp: m.hp?.average || null,
         hp_dice: m.hp?.formula || null,
@@ -1421,7 +1421,7 @@ function showStatBlock(m) {
     ${raw.languages ? `<div class="sb-prop-row"><span class="sb-prop-key">Languages</span><span class="sb-prop-val">${escapeHTML(raw.languages)}</span></div>` : ''}
     <div class="sb-prop-row">
       <span class="sb-prop-key">CR</span>
-      <span class="sb-prop-val">CR ${escapeHTML(String(raw.cr))} (${fmt(parseInt(raw.xp)||0)} XP) · PB ${escapeHTML(raw.proficiency_bonus||'—')}</span>
+      <span class="sb-prop-val">CR ${escapeHTML(String(raw.cr))} (${fmt(parseInt(String(raw.xp).replace(/,/g,''))||0)} XP) · PB ${escapeHTML(raw.proficiency_bonus||'—')}</span>
     </div>
 
     ${sections.map(s => `
@@ -1757,7 +1757,7 @@ function addCreatureInMemory(raw){
     alignment: raw.alignment,
     cr: String(raw.cr),
     crv: crToVal(raw.cr),
-    xp: parseInt(raw.xp) || 0,
+    xp: parseInt(String(raw.xp).replace(/,/g,'')) || 0,
     ac: raw.ac || null,
     hp: raw.hp?.average || null,
     hp_dice: raw.hp?.formula || null,

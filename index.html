@@ -1051,9 +1051,7 @@ function buildStatusTags(){
 
 // Build a lookup map from creature name to full raw data
 function getCreatureDataMap(){
-  const map = {};
-  (CREATURES_DATA.monsters || []).forEach(m => { map[m.name] = m; });
-  return map;
+  return MONSTER_MAP;
 }
 
 function fmtMod(mod){ return mod >= 0 ? `+${mod}` : `${mod}`; }

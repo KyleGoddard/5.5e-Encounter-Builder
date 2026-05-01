@@ -1062,6 +1062,10 @@ function buildStatBlock(m){
   const hpStr = m.hp ? `${m.hp.average} (${m.hp.formula})` : '—';
 
   const details = [];
+  const proficientSaves = ['str','dex','con','int','wis','cha']
+    .filter(k => m[`${k}_save`] !== undefined && m[`${k}_save`] !== m[`${k}_mod`])
+    .map(k => `${k.toUpperCase()} ${m[`${k}_save`]}`);
+  if(proficientSaves.length > 0) details.push(`<div class="stat-block-detail"><strong>Saving Throws</strong> ${escapeHTML(proficientSaves.join(', '))}</div>`);
   if(m.skills)         details.push(`<div class="stat-block-detail"><strong>Skills</strong> ${escapeHTML(m.skills)}</div>`);
   if(m.resistances)    details.push(`<div class="stat-block-detail"><strong>Resistances</strong> ${escapeHTML(m.resistances)}</div>`);
   if(m.immunities)     details.push(`<div class="stat-block-detail"><strong>Immunities</strong> ${escapeHTML(m.immunities)}</div>`);

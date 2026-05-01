@@ -1070,6 +1070,7 @@ function buildStatBlock(m){
   if(m.resistances)    details.push(`<div class="stat-block-detail"><strong>Resistances</strong> ${escapeHTML(m.resistances)}</div>`);
   if(m.immunities)     details.push(`<div class="stat-block-detail"><strong>Immunities</strong> ${escapeHTML(m.immunities)}</div>`);
   if(m.vulnerabilities)details.push(`<div class="stat-block-detail"><strong>Vulnerabilities</strong> ${escapeHTML(m.vulnerabilities)}</div>`);
+  if(m.gear)           details.push(`<div class="stat-block-detail"><strong>Gear</strong> ${escapeHTML(m.gear)}</div>`);
   if(m.senses)         details.push(`<div class="stat-block-detail"><strong>Senses</strong> ${escapeHTML(m.senses)}</div>`);
   if(m.languages)      details.push(`<div class="stat-block-detail"><strong>Languages</strong> ${escapeHTML(m.languages)}</div>`);
   details.push(`<div class="stat-block-detail"><strong>CR</strong> ${m.cr} (${m.xp} XP) &nbsp;|&nbsp; <strong>Proficiency Bonus</strong> ${m.proficiency_bonus}</div>`);

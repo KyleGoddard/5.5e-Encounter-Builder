@@ -7415,9 +7415,9 @@
       "immunities": null,
       "vulnerabilities": null,
       "senses": "Passive Perception 15",
-      "languages": "Common, Druidic, Sylvan",
-      "cr": "2",
-      "xp": "450",
+      "languages": "Elvish, Undercommon",
+      "cr": "6",
+      "xp": "2300",
       "proficiency_bonus": "+2",
       "traits": [
         {
@@ -7445,22 +7445,6 @@
         {
           "name": "Poison Burst",
           "description": "Ranged Attack Roll: +6, range 120 ft. Hit: 13 (3d6 + 3) Poison damage."
-        },
-        {
-          "name": "Multiattack",
-          "description": "The druid makes two attacks, using Vine Staff or Verdant Wisp in any combination."
-        },
-        {
-          "name": "Vine Staff",
-          "description": "Melee Attack Roll: +5, reach 5 ft. Hit: 7 (1d8 + 3) Bludgeoning damage plus 2 (1d4) Poison damage."
-        },
-        {
-          "name": "Verdant Wisp",
-          "description": "Ranged Attack Roll: +5, range 90 ft. Hit: 10 (3d6) Radiant damage."
-        },
-        {
-          "name": "Spellcasting",
-          "description": "The druid casts one of the following spells, using Wisdom as the spellcasting ability (spell save DC 13): At Will: Druidcraft, Speak with Animals 2/Day Each: Entangle, Thunderwave 1/Day Each: Animal Messenger, Longstrider, Moonbeam Dryad Dryad"
         }
       ],
       "bonus_actions": [

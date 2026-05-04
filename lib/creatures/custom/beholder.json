@@ -1,0 +1,83 @@
+{ "monsters":  [{                                                                                                                                                                                                                                                                                                                          
+    "name": "Beholder",
+    "size": "Large",                                                                                                                                                                                                                                                                                                         
+    "type": "Aberration",                                                                                                                                                                                                                                                                                                    
+    "alignment": "Lawful Evil",
+    "ac": 18,                                                                                                                                                                                                                                                                                                                
+    "initiative": "+12",
+    "hp": {
+      "average": 190,
+      "formula": "20d10 + 80"
+    },                                                                                                                                                                                                                                                                                                                       
+    "speed": "5 ft., Fly 40 ft. (hover)",
+    "str": 16,                                                                                                                                                                                                                                                                                                               
+    "str_mod": "+3",
+    "str_save": "+3",
+    "dex": 14,
+    "dex_mod": "+2",                                                                                                                                                                                                                                                                                                         
+    "dex_save": "+2",
+    "con": 18,                                                                                                                                                                                                                                                                                                               
+    "con_mod": "+4",
+    "con_save": "+9",
+    "int": 17,
+    "int_mod": "+3",                                                                                                                                                                                                                                                                                                         
+    "int_save": "+3",
+    "wis": 15,                                                                                                                                                                                                                                                                                                               
+    "wis_mod": "+2",
+    "wis_save": "+7",
+    "cha": 17,
+    "cha_mod": "+3",                                                                                                                                                                                                                                                                                                         
+    "cha_save": "+3",
+    "skills": "Perception +12",                                                                                                                                                                                                                                                                                              
+    "resistances": null,
+    "immunities": "Prone",                                                                                                                                                                                                                                                                                                   
+    "vulnerabilities": null,
+    "senses": "Darkvision 120 ft., Passive Perception 22",                                                                                                                                                                                                                                                                   
+    "languages": "Deep Speech, Undercommon",
+    "cr": "13",
+    "xp": "10000",                                                                                                                                                                                                                                                                                                           
+    "proficiency_bonus": "+5",
+    "traits": [                                                                                                                                                                                                                                                                                                              
+      {           
+        "name": "Legendary Resistance (3/Day, or 4/Day in Lair)",
+        "description": "If the beholder fails a saving throw, it can choose to succeed instead."                                                                                                                                                                                                                             
+      }
+    ],                                                                                                                                                                                                                                                                                                                       
+    "actions": [  
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Multiattack",
+        "description": "The beholder uses Eye Rays three times."                                                                                                                                                                                                                                                             
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Bite",                                                                                                                                                                                                                                                                                                      
+        "description": "Melee Attack Roll: +8, reach 5 ft. Hit: 13 (3d6 + 3) Piercing damage."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Eye Rays",                                                                                                                                                                                                                                                                                                  
+        "description": "The beholder randomly shoots one of the following magical rays at a target it can see within 120 feet of itself (roll 1d10; reroll if the beholder has already used that ray during this turn). 1: Charm Ray. Wisdom Saving Throw: DC 16. Failure: 13 (3d8) Psychic damage, and the target has the Charmed condition for 1 hour or until it takes damage. Success: Half damage only. 2: Paralyzing Ray. Constitution Saving Throw: DC 16. Failure: The target has the Paralyzed condition and repeats the save at the end of each of its turns, ending the effect on itself on a success. After 1 minute, it succeeds automatically. 3: Fear Ray. Wisdom Saving Throw: DC 16. Failure: 14 (4d6) Psychic damage, and the target has the Frightened condition until the end of its next turn. 4: Slowing Ray. Constitution Saving Throw: DC 16. Failure: 18 (4d8) Necrotic damage. Until the end of the target's next turn, the target's Speed is halved; the target can't take Reactions; and it can take either an action or a Bonus Action on its turn, not both. Success: Half damage only. 5: Enervation Ray. Constitution Saving Throw: DC 16. Failure: 13 (3d8) Poison damage, and the target has the Poisoned condition until the end of its next turn. While Poisoned, the target can't regain Hit Points. Success: Half damage only. 6: Telekinetic Ray. Strength Saving Throw: DC 16 (the target succeeds automatically if it is Gargantuan). Failure: The beholder moves the target up to 30 feet in any direction. The target has the Restrained condition until the start of the  beholder's next turn or until the beholder has the Incapacitated condition. 7: Sleep Ray. Wisdom Saving Throw: DC 16 (the target succeeds automatically if it is a Construct or an Undead). Failure: The target has the Unconscious condition for 1 minute. The condition ends if the target takes damage or a creature within 5 feet of it takes an action to wake it. 8: Petrification Ray. Constitution Saving Throw: DC 16. First Failure: The target has the Restrained condition and repeats the save at the end of its next turn, ending the effect on itself on a success. Second Failure: The target has the Petrified condition instead of the Restrained condition. 9: Disintegration Ray. Dexterity Saving Throw: DC 16. Failure: 36 (8d8) Force damage. If the target is a nonmagical object or a creation of magical force, a 10-foot Cube of it disintegrates into dust. Success: Half damage. If this damage reduces a creature to 0 Hit Points, it disintegrates into dust. 10: Death Ray. Dexterity Saving Throw: DC 16. Failure: 55 (10d10) Necrotic damage. Success: Half damage. The target dies if the ray reduces it to 0 Hit Points."
+      }
+    ],                                                                                                                                                                                                                                                                                                                       
+    "bonus_actions": [
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Antimagic Cone",
+        "description": "The beholder's central eye emits an antimagic wave in a 150-foot Cone. Until the start of the beholder's next turn, that area acts as an Antimagic Field spell, and that area works against the beholder's own Eye Rays."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "reactions": [],                                                                                                                                                                                                                                                                                                         
+    "legendary_actions": [
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "_preamble",
+        "description": "Legendary Action Uses: 3 (4 in Lair). Immediately after another creature's turn, the beholder can expend a use to take one of the following actions. The beholder regains all expended uses at the start of each of its turns."                                                                      
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Chomp",                                                                                                                                                                                                                                                                                                     
+        "description": "The beholder makes two Bite attacks."
+      },
+      {
+        "name": "Glare",
+        "description": "The beholder uses Eye Rays."                                                                                                                                                                                                                                                                         
+      }
+    ],                                                                                                                                                                                                                                                                                                                       
+    "lair_actions": [],
+    "mythic_actions": []
+  }]}

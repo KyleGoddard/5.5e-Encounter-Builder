@@ -1,0 +1,157 @@
+{ "monsters":
+[{
+      "name": "Drow Elite Warrior",
+      "size": "Medium",
+      "type": "Humanoid Elf",
+      "alignment": "Neutral Evil",
+      "ac": 18,
+      "initiative": "+4",
+      "hp": {
+        "average": 71,
+        "formula": "11d8 + 22"
+      },
+      "speed": "30 ft.",
+      "str": 13,
+      "str_mod": "+1",
+      "str_save": "+1",
+      "dex": 18,
+      "dex_mod": "+4",
+      "dex_save": "+7",
+      "con": 14,
+      "con_mod": "+2",
+      "con_save": "+5",
+      "int": 11,
+      "int_mod": "+0",
+      "int_save": "+0",
+      "wis": 13,
+      "wis_mod": "+1",
+      "wis_save": "+4",
+      "cha": 12,
+      "cha_mod": "+1",
+      "cha_save": "+1",
+      "skills": "Perception +4, Stealth +10",
+      "resistances": null,
+      "immunities": null,
+      "vulnerabilities": null,
+      "senses": "Darkvision 120 ft., Passive Perception 14",
+      "languages": "Elvish, Undercommon",
+      "cr": "5",
+      "xp": "1800",
+      "proficiency_bonus": "+3",
+      "traits": [
+        {
+          "name": "Fey Ancestry",
+          "description": "The drow has advantage on saving throws against being charmed, and magic can't put the drow to sleep"
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the drow has Disadvantage on ability checks and attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        },
+        {
+          "name": "Innate Spellcasting",
+          "description": "The drow's spellcasting ability is Charisma (spell save DC 12). It can innately cast the following spells, requiring no material components: At will: dancing lights 1/day each: darkness, faerie fire, levitate (self only)"
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "description": "The drow makes two shortsword attacks."
+        },
+        {
+          "name": "Shortsword",
+          "description": "Melee Attack Roll: +7, reach 5 ft. Hit: 7 (1d6 + 4) Piercing damage plus 10 (3d6) poison damage."
+        },
+        {
+          "name": "Hand Crossbow",
+          "description": "Ranged Attack Roll: +7, range 30/120 ft. Hit: 7 (1d6 + 4) Piercing damage , and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 hour. If the saving throw fails by 5 or more, the target is also unconscious while poisoned in this way. The target wakes up if it takes damage or if another creature takes an action to shake it awake."
+        }
+      ],
+      "bonus_actions": [],
+      "reactions": [
+        {
+          "name": "Parry",
+          "description": "The drow adds 3 to its AC against one melee attack that would hit it. To do so, the drow must see the attacker and be wielding a melee weapon."
+        }
+      ],
+      "legendary_actions": [],
+      "lair_actions": [],
+      "mythic_actions": []
+    },
+    {
+      "name": "Drow Priestess of Lolth",
+      "size": "Medium",
+      "type": "Humanoid Elf",
+      "alignment": "Neutral Evil",
+      "ac": 16,
+      "initiative": "+2",
+      "hp": {
+        "average": 71,
+        "formula": "13d8 + 13"
+      },
+      "speed": "30 ft.",
+      "str": 10,
+      "str_mod": "+0",
+      "str_save": "+0",
+      "dex": 14,
+      "dex_mod": "+2",
+      "dex_save": "+2",
+      "con": 12,
+      "con_mod": "+1",
+      "con_save": "+4",
+      "int": 13,
+      "int_mod": "+1",
+      "int_save": "+1",
+      "wis": 17,
+      "wis_mod": "+3",
+      "wis_save": "+6",
+      "cha": 18,
+      "cha_mod": "+4",
+      "cha_save": "+7",
+      "skills": "Insight +6, Perception +6, Religion +4, Stealth +5",
+      "resistances": null,
+      "immunities": null,
+      "vulnerabilities": null,
+      "senses": "Darkvision 120 ft., Passive Perception 16",
+      "languages": "Elvish, Undercommon",
+      "cr": "5",
+      "xp": "3900",
+      "proficiency_bonus": "+3",
+      "traits": [
+        {
+          "name": "Fey Ancestry",
+          "description": "The drow has advantage on saving throws against being charmed, and magic can't put the drow to sleep"
+        },
+        {
+          "name": "Innate Spellcasting",
+          "description": "The drow's spellcasting ability is Charisma (spell save DC 15). It can innately cast the following spells, requiring no material components: At will: dancing lights 1/day each: darkness, faerie fire, levitate (self only)"
+        },
+        {
+          "name": "Spellcasting",
+          "description": "The drow is a 10th-level spellcaster. Her spellcasting ability is Wisdom (save DC 14, +6 to hit with spell attacks). The drow has the following cleric spells prepared: Cantrips (at will): guidance, poison spray, resistance, spare the dying, thaumaturgy 1st level (4 slots): animal friendship, cure wounds, detect poison and disease, ray of sickness 2nd level (3 slots): lesser restoration, protection from poison, web 3rd level (3 slots): conjure animals (2 giant spiders), dispel magic 4th level (3 slots): divination, freedom of movement 5th level (2 slots): insect plague, mass cure wounds"
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the drow has Disadvantage on ability checks and attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "description": "The drow makes two scourge attacks."
+        },
+        {
+          "name": "Scourge",
+          "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage plus 17 (5d6) poison damage!"
+        },
+        {
+          "name": "Summon Demon (1/Day)",
+          "description": "The drow attempts to magically summon a yochlol with a 30 percent chance of success. If the attempt fails, the drow takes 5 (1d10) psychic damage. Otherwise, the summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 10 minutes, until it or its summoner dies, or until its summoner dismisses it as an action."
+        }
+      ],
+      "bonus_actions": [],
+      "reactions": [],
+      "legendary_actions": [],
+      "lair_actions": [],
+      "mythic_actions": []
+    }
+  ]}

@@ -1,0 +1,87 @@
+  {"monsters":[{                                                                                                                                                                                                                                                                                                                          
+    "name": "Yochlol",                                                                                                                                                                                                                                                                                                       
+    "size": "Medium",                                                                                                                                                                                                                                                                                                        
+    "type": "Fiend (Demon)",                                                                                                                                                                                                                                                                                                 
+    "alignment": "Chaotic Evil",                                                                                                                                                                                                                                                                                             
+    "ac": 15,                                                                                                                                                                                                                                                                                                                
+    "initiative": "+8",
+    "hp": {                                                                                                                                                                                                                                                                                                                  
+      "average": 153,
+      "formula": "18d8 + 72"                                                                                                                                                                                                                                                                                                 
+    },            
+    "speed": "30 ft., Climb 30 ft.",
+    "str": 15,                                                                                                                                                                                                                                                                                                               
+    "str_mod": "+2",
+    "str_save": "+2",                                                                                                                                                                                                                                                                                                        
+    "dex": 19,    
+    "dex_mod": "+4",
+    "dex_save": "+8",
+    "con": 18,                                                                                                                                                                                                                                                                                                               
+    "con_mod": "+4",
+    "con_save": "+4",                                                                                                                                                                                                                                                                                                        
+    "int": 13,    
+    "int_mod": "+1",
+    "int_save": "+5",
+    "wis": 15,
+    "wis_mod": "+2",                                                                                                                                                                                                                                                                                                         
+    "wis_save": "+6",
+    "cha": 17,                                                                                                                                                                                                                                                                                                               
+    "cha_mod": "+3",
+    "cha_save": "+7",
+    "skills": "Deception +11, Insight +6",
+    "resistances": "Cold, Fire, Lightning",                                                                                                                                                                                                                                                                                  
+    "immunities": "Poison; Poisoned",
+    "vulnerabilities": null,                                                                                                                                                                                                                                                                                                 
+    "senses": "Darkvision 120 ft., Passive Perception 12",
+    "languages": "Abyssal, Elvish, Undercommon",                                                                                                                                                                                                                                                                             
+    "cr": "10",
+    "xp": "5900",                                                                                                                                                                                                                                                                                                            
+    "proficiency_bonus": "+4",
+    "traits": [
+      {
+        "name": "Demonic Restoration",                                                                                                                                                                                                                                                                                       
+        "description": "If the yochlol dies outside the Abyss, its body dissolves, and it gains a new body instantly, reviving with all its Hit Points in the Abyss."
+      },                                                                                                                                                                                                                                                                                                                     
+      {           
+        "name": "Magic Resistance",                                                                                                                                                                                                                                                                                          
+        "description": "The yochlol has Advantage on saving throws against spells and other magical effects."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Spider Climb",                                                                                                                                                                                                                                                                                              
+        "description": "The yochlol can climb difficult surfaces, including along ceilings, without needing to make an ability check."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Web Walker",                                                                                                                                                                                                                                                                                                
+        "description": "The yochlol ignores movement restrictions caused by webs."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "actions": [                                                                                                                                                                                                                                                                                                             
+      {           
+        "name": "Multiattack",
+        "description": "The yochlol makes two Caustic Lash attacks, and it can use Spellcasting to cast Web or Dominate Person if available."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Caustic Lash",                                                                                                                                                                                                                                                                                              
+        "description": "Melee or Ranged Attack Roll: +8, reach 10 ft. or range 120 ft. Hit: 25 (6d6 + 4) Acid damage."
+      },                                                                                                                                                                                                                                                                                                                     
+      {           
+        "name": "Spellcasting",                                                                                                                                                                                                                                                                                              
+        "description": "The yochlol casts one of the following spells, requiring no Material components and using Charisma as the spellcasting ability (spell save DC 15). At Will: Detect Thoughts, Gaseous Form (self only), Web. 1/Day: Dominate Person."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "bonus_actions": [                                                                                                                                                                                                                                                                                                       
+      {           
+        "name": "Shape-Shift",
+        "description": "The yochlol shape-shifts into a Medium Humanoid or a Medium spider or back into its true form. Its game statistics are the same in each form. Any equipment it is wearing or carrying isn't transformed."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "reactions": [                                                                                                                                                                                                                                                                                                           
+      {           
+        "name": "Toxic Escape",                                                                                                                                                                                                                                                                                              
+        "description": "Trigger: The yochlol is hit by an attack roll. Response: The yochlol halves the attack's damage to itself (round down), and it teleports to an unoccupied space it can see within 30 feet of itself. Constitution Saving Throw: DC 15, each creature within 5 feet of the yochlol's destination space. Failure: The target has the Poisoned condition until the end of its next turn. While Poisoned, it has the Incapacitated condition."                                                                                                                                                                                 
+      }           
+    ],                                                                                                                                                                                                                                                                                                                       
+    "legendary_actions": [],
+    "lair_actions": [],                                                                                                                                                                                                                                                                                                      
+    "mythic_actions": []
+  }]}

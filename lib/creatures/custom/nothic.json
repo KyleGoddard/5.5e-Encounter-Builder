@@ -1,0 +1,65 @@
+{                             
+    "name": "Nothic",
+    "size": "Medium",                                                                                                                                                                                                                                                                                                        
+    "type": "Aberration",
+    "alignment": "Neutral Evil",                                                                                                                                                                                                                                                                                             
+    "ac": 15,                                                                                                                                                                                                                                                                                                                
+    "initiative": "+3",
+    "hp": {                                                                                                                                                                                                                                                                                                                  
+      "average": 45,
+      "formula": "6d8 + 18"
+    },
+    "speed": "30 ft.",
+    "str": 14,                                                                                                                                                                                                                                                                                                               
+    "str_mod": "+2",
+    "str_save": "+2",                                                                                                                                                                                                                                                                                                        
+    "dex": 16,    
+    "dex_mod": "+3",
+    "dex_save": "+3",
+    "con": 16,                                                                                                                                                                                                                                                                                                               
+    "con_mod": "+3",
+    "con_save": "+3",                                                                                                                                                                                                                                                                                                        
+    "int": 13,    
+    "int_mod": "+1",
+    "int_save": "+1",
+    "wis": 10,
+    "wis_mod": "+0",                                                                                                                                                                                                                                                                                                         
+    "wis_save": "+0",
+    "cha": 8,                                                                                                                                                                                                                                                                                                                
+    "cha_mod": "-1",
+    "cha_save": "-1",
+    "skills": "Arcana +3, Insight +4, Perception +4, Stealth +5",
+    "resistances": null,                                                                                                                                                                                                                                                                                                     
+    "immunities": null,
+    "vulnerabilities": null,                                                                                                                                                                                                                                                                                                 
+    "senses": "Truesight 120 ft., Passive Perception 14",
+    "languages": "Undercommon",                                                                                                                                                                                                                                                                                              
+    "cr": "2",
+    "xp": "450",                                                                                                                                                                                                                                                                                                             
+    "proficiency_bonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "description": "The nothic makes two Claw attacks."                                                                                                                                                                                                                                                                  
+      },
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Claw",
+        "description": "Melee Attack Roll: +5, reach 5 ft. Hit: 8 (1d10 + 3) Slashing damage."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Rotting Gaze",                                                                                                                                                                                                                                                                                              
+        "description": "Constitution Saving Throw: DC 13, one creature the nothic can see within 120 feet. Failure: 17 (5d6) Necrotic damage. Success: Half damage."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "bonus_actions": [                                                                                                                                                                                                                                                                                                       
+      {           
+        "name": "Weird Insight (Recharge 6)",
+        "description": "Wisdom Saving Throw: DC 14, one creature the nothic can see within 120 feet. Failure: The nothic magically learns one fact or secret about the target."                                                                                                                                              
+      }
+    ],                                                                                                                                                                                                                                                                                                                       
+    "reactions": [],
+    "legendary_actions": [],                                                                                                                                                                                                                                                                                                 
+    "lair_actions": [],
+    "mythic_actions": []                                                                                                                                                                                                                                                                                                     
+  }

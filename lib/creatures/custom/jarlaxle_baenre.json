@@ -1,0 +1,110 @@
+{                              
+    "name": "Jarlaxle Baenre",
+    "size": "Medium",                                                                                                                                                                                                                                                                                                        
+    "type": "Humanoid (Elf)",
+    "alignment": "Chaotic Neutral",                                                                                                                                                                                                                                                                                          
+    "ac": 24,          
+    "initiative": "+6",                                                                                                                                                                                                                                                                                                      
+    "hp": {       
+      "average": 123,
+      "formula": "19d8 + 38"
+    },                                                                                                                                                                                                                                                                                                                       
+    "speed": "30 ft.",
+    "str": 12,                                                                                                                                                                                                                                                                                                               
+    "str_mod": "+1",
+    "str_save": "+1",
+    "dex": 22,
+    "dex_mod": "+6",                                                                                                                                                                                                                                                                                                         
+    "dex_save": "+11",
+    "con": 14,                                                                                                                                                                                                                                                                                                               
+    "con_mod": "+2",
+    "con_save": "+2",
+    "int": 20,
+    "int_mod": "+5",                                                                                                                                                                                                                                                                                                         
+    "int_save": "+5",
+    "wis": 16,                                                                                                                                                                                                                                                                                                               
+    "wis_mod": "+3",
+    "wis_save": "+8",
+    "cha": 19,
+    "cha_mod": "+4",                                                                                                                                                                                                                                                                                                         
+    "cha_save": "+4",
+    "skills": "Acrobatics +11, Athletics +6, Deception +14, Persuasion +8, Sleight of Hand +11, Stealth +16",                                                                                                                                                                                                                
+    "resistances": null,                                                                                                                                                                                                                                                                                                     
+    "immunities": null,
+    "vulnerabilities": null,                                                                                                                                                                                                                                                                                                 
+    "senses": "Darkvision 120 ft., Passive Perception 18",
+    "languages": "Abyssal, Common, Draconic, Dwarvish, Elvish, Undercommon",
+    "cr": "15",                                                                                                                                                                                                                                                                                                              
+    "xp": "13000",
+    "proficiency_bonus": "+5",                                                                                                                                                                                                                                                                                               
+    "traits": [   
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Special Equipment",
+        "description": "Jarlaxle wears +3 leather armor, a hat of disguise, a bracer of flying daggers, a cloak of invisibility, a knave's eye patch, and a ring of truth telling. He wields a +3 rapier and carries a portable hole and a wand of web. His hat is adorned with a feather of diatryma summoning."            
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Evasion",                                                                                                                                                                                                                                                                                                   
+        "description": "If Jarlaxle is subjected to an effect that allows him to make a Dexterity saving throw to take only half damage, he instead takes no damage if he succeeds on the saving throw, and only half damage if he fails. He can't use this trait if he's Incapacitated."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Fey Ancestry",                                                                                                                                                                                                                                                                                              
+        "description": "Jarlaxle has Advantage on saving throws against being Charmed, and magic can't put him to sleep."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Innate Spellcasting",                                                                                                                                                                                                                                                                                       
+        "description": "Jarlaxle's innate spellcasting ability is Charisma (spell save DC 17, +9 to hit with spell attacks). He can innately cast the following spells, requiring no material components. At will: dancing lights. 1/day each: darkness, faerie fire, levitate (self only)."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Legendary Resistance (1/Day)",                                                                                                                                                                                                                                                                              
+        "description": "If Jarlaxle fails a saving throw, he can choose to succeed instead."
+      },
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Master Attuner",
+        "description": "Jarlaxle can attune to up to five magic items, and he can attune to magic items that normally require attunement by a sorcerer, warlock, or wizard."                                                                                                                                                 
+      },          
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Sneak Attack (1/Turn)",
+        "description": "Jarlaxle deals an extra 24 (7d6) damage when he hits a target with a weapon attack and has Advantage on the attack roll, or when the target is within 5 feet of an ally of Jarlaxle's that isn't Incapacitated and Jarlaxle doesn't have Disadvantage on the attack roll."                           
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Suave Defense",                                                                                                                                                                                                                                                                                             
+        "description": "While Jarlaxle is wearing light or no armor and wielding no shield, his AC includes his Charisma modifier."                                                                                                                                                                                          
+      },
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "Sunlight Sensitivity",
+        "description": "When not wearing his knave's eye patch, Jarlaxle has Disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "actions": [                                                                                                                                                                                                                                                                                                             
+      {           
+        "name": "Multiattack",
+        "description": "Jarlaxle makes three attacks with his +3 rapier or two attacks with daggers created by his bracer of flying daggers."                                                                                                                                                                                
+      },
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "+3 Rapier",
+        "description": "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 13 (1d8 + 9) Piercing damage."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Flying Dagger",                                                                                                                                                                                                                                                                                             
+        "description": "Ranged Weapon Attack: +11 to hit, range 20/60 ft., one target. Hit: 8 (1d4 + 6) Piercing damage."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "bonus_actions": [],                                                                                                                                                                                                                                                                                                     
+    "reactions": [],                                                                                                                                                                                                                                                                                                         
+    "legendary_actions": [
+      {                                                                                                                                                                                                                                                                                                                      
+        "name": "_preamble",
+        "description": "Legendary Action Uses: 3. Immediately after another creature's turn, Jarlaxle can expend a use to take one of the following actions. Jarlaxle regains all expended uses at the start of each of his turns."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Quick Step",                                                                                                                                                                                                                                                                                                
+        "description": "Jarlaxle moves up to his speed without provoking opportunity attacks."
+      },                                                                                                                                                                                                                                                                                                                     
+      {
+        "name": "Attack (Costs 2 Actions)",                                                                                                                                                                                                                                                                                  
+        "description": "Jarlaxle makes one attack with his +3 rapier or two attacks with daggers created by his bracer of flying daggers."
+      }                                                                                                                                                                                                                                                                                                                      
+    ],
+    "lair_actions": [],                                                                                                                                                                                                                                                                                                      
+    "mythic_actions": []
+  }

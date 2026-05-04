@@ -205,14 +205,31 @@
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* Print styles */
+  @page{margin:0.5in}
   @media print {
     body{background:white;color:black;height:auto;overflow:visible}
     #header,#print-controls,#sidebar,#monster-list,#encounter-pane,#import-pane{display:none !important}
     #print-pane{display:block !important;background:white;padding:0;overflow:visible;height:auto}
-    #print-doc{box-shadow:none;border:none;max-width:100%;padding:20px}
+    #print-doc{box-shadow:none;border:none;max-width:100%;padding:0}
     #print-doc h1,#print-doc h2{color:#000;border-color:#000}
     #print-doc th{background:#333}
-    #print-doc table,#print-doc tr,#print-doc td{page-break-inside:avoid}
+    /* Keep rows intact, but allow tables to split across pages */
+    #print-doc tr,#print-doc td{page-break-inside:avoid;break-inside:avoid}
+    /* Prevent heading orphans — keep heading with following content */
+    #print-doc h1,#print-doc h2{page-break-after:avoid;break-after:avoid}
+    /* Repeat table headers on each page when a table breaks */
+    #print-doc thead{display:table-header-group}
+    #print-doc tfoot{display:table-footer-group}
+    /* Keep summary cards and grouped blocks together */
+    #print-doc .summary-grid{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .summary-cell{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .stat-block{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .stat-block-highlights{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .action-entry{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .footer-note{page-break-inside:avoid;break-inside:avoid}
+    #print-doc .tracker-section-note{page-break-after:avoid;break-after:avoid}
+    /* A creature tracker group header must not be left dangling at page end */
+    #print-doc .group-header-row{page-break-after:avoid;break-after:avoid}
     #print-doc .tracker-table th{background:#333 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     #print-doc .tracker-row-group:nth-child(odd) td{background:#fafafa !important}
     #print-doc .group-header-row td{background:#f0e8dc !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}

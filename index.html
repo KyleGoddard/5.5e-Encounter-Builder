@@ -207,10 +207,12 @@
   /* Print styles */
   @page{margin:0.5in}
   @media print {
-    body{background:white;color:black;height:auto;overflow:visible}
+    /* Strip flex/overflow off ancestor chain so the browser can paginate #print-doc */
+    html,body{background:white;color:black;height:auto !important;min-height:0 !important;overflow:visible !important;display:block !important}
+    #main{display:block !important;flex:none !important;overflow:visible !important;height:auto !important}
     #header,#print-controls,#sidebar,#monster-list,#encounter-pane,#import-pane{display:none !important}
-    #print-pane{display:block !important;background:white;padding:0;overflow:visible;height:auto}
-    #print-doc{box-shadow:none;border:none;max-width:100%;padding:0}
+    #print-pane{display:block !important;background:white;padding:0 !important;overflow:visible !important;height:auto !important;flex:none !important}
+    #print-doc{box-shadow:none;border:none;max-width:100%;padding:0;margin:0}
     #print-doc h1,#print-doc h2{color:#000;border-color:#000}
     #print-doc th{background:#333}
     /* Keep rows intact, but allow tables to split across pages */
@@ -1328,6 +1330,178 @@ function renderPrintView(){
     </div>
   `;
   document.getElementById('print-doc').innerHTML = html;
+  // Pagination must be synchronous so window.print() / beforeprint sees the
+  // paginated DOM. getBoundingClientRect() forces a layout flush, so heights
+  // are accurate even immediately after innerHTML assignment.
+  paginatePrintView();
+}
+
+// Page geometry used for pagination. Letter portrait at 96 CSS px/in with the
+// 0.5in @page margins declared in the print stylesheet → 7.5in × 10in usable.
+const PRINT_PAGE_HEIGHT_PX = 960;
+const PRINT_PAGE_WIDTH_PX = 720;
+
+function paginatePrintView(){
+  const printDoc = document.getElementById('print-doc');
+  if(!printDoc) return;
+
+  // Browsers paginate using the print layout, not the on-screen layout. The
+  // on-screen #print-doc has different padding/max-width than the printed one,
+  // which means line wrapping (and therefore element heights) can differ. Force
+  // the print-equivalent box width during measurement, then restore.
+  const prevInline = printDoc.getAttribute('style') || '';
+  const prevVisibility = printDoc.style.visibility;
+  printDoc.style.visibility = 'hidden';
+  printDoc.style.maxWidth = PRINT_PAGE_WIDTH_PX + 'px';
+  printDoc.style.width = PRINT_PAGE_WIDTH_PX + 'px';
+  printDoc.style.padding = '0';
+  printDoc.style.margin = '0';
+  // Force reflow
+  void printDoc.offsetHeight;
+
+  try{
+    splitTrackerForPrint(printDoc, PRINT_PAGE_HEIGHT_PX);
+    forceStatBlockBreaks(printDoc, PRINT_PAGE_HEIGHT_PX);
+  } finally {
+    printDoc.setAttribute('style', prevInline);
+    printDoc.style.visibility = prevVisibility;
+  }
+}
+
+// Split the combat tracker tbody into multiple tables, one per page worth of
+// rows. Each chunk carries its own thead (so headers repeat on every page) and
+// every chunk after the first gets a forced page break before it.
+function splitTrackerForPrint(printDoc, pageHeight){
+  const tracker = printDoc.querySelector('.tracker-table');
+  if(!tracker) return;
+  const tbody = tracker.querySelector('tbody');
+  const thead = tracker.querySelector('thead');
+  if(!tbody || !thead) return;
+
+  const rows = Array.from(tbody.children);
+  if(rows.length === 0) return;
+
+  const docTop = printDoc.getBoundingClientRect().top;
+  const trackerTop = tracker.getBoundingClientRect().top - docTop;
+  const theadH = thead.getBoundingClientRect().height;
+  const rowHeights = rows.map(r => r.getBoundingClientRect().height);
+
+  // The tracker may not start at the top of a page — figure out remaining room
+  // on its first page, then assume full pages thereafter.
+  const offsetInPage = ((trackerTop % pageHeight) + pageHeight) % pageHeight;
+  let budget = pageHeight - offsetInPage;
+  let used = theadH;
+
+  const chunks = [[]];
+  for(let i = 0; i < rows.length; i++){
+    const h = rowHeights[i];
+    if(used + h > budget && chunks[chunks.length - 1].length > 0){
+      chunks.push([]);
+      used = theadH;
+      budget = pageHeight;
+    }
+    chunks[chunks.length - 1].push(rows[i]);
+    used += h;
+  }
+
+  if(chunks.length <= 1) return;
+
+  const parent = tracker.parentNode;
+  chunks.forEach((chunkRows, idx) => {
+    const newTable = document.createElement('table');
+    newTable.className = tracker.className;
+    if(idx > 0){
+      newTable.style.pageBreakBefore = 'always';
+      newTable.style.breakBefore = 'page';
+    }
+    newTable.appendChild(thead.cloneNode(true));
+    const newTbody = document.createElement('tbody');
+    chunkRows.forEach(r => newTbody.appendChild(r));
+    newTable.appendChild(newTbody);
+    parent.insertBefore(newTable, tracker);
+  });
+  parent.removeChild(tracker);
+}
+
+// Walk top-level children of #print-doc, simulating where each lands in the
+// printed layout. Force breaks where:
+//  - a stat block would straddle a page boundary AND fits on a single page
+//  - an h2 immediately preceding a stat block would end up orphaned at the
+//    bottom of a page (we move the h2 instead so the stat block follows it)
+// A stat block taller than a page is left alone — splitting is unavoidable.
+function forceStatBlockBreaks(printDoc, pageHeight){
+  const docTop = printDoc.getBoundingClientRect().top;
+  const children = Array.from(printDoc.children);
+
+  let printY = 0;
+  let prevScreenBottom = 0;
+  let first = true;
+
+  for(let i = 0; i < children.length; i++){
+    const child = children[i];
+    const rect = child.getBoundingClientRect();
+    const screenTop = rect.top - docTop;
+    const screenBottom = rect.bottom - docTop;
+    const childHeight = rect.height;
+
+    // Carry forward inter-element gap (margins) from screen layout.
+    if(!first){
+      const gap = Math.max(0, screenTop - prevScreenBottom);
+      printY += gap;
+    }
+    first = false;
+
+    // If this element already has a forced break (e.g. a tracker chunk), jump
+    // to the top of the next page before placing it.
+    const hasBreakBefore =
+      child.style.breakBefore === 'page' ||
+      child.style.pageBreakBefore === 'always';
+    if(hasBreakBefore && printY > 0){
+      const curPage = Math.floor((printY - 1) / pageHeight);
+      printY = (curPage + 1) * pageHeight;
+    }
+
+    let appliedBreakHere = false;
+
+    // Orphan-heading guard: if this is an h2 immediately followed by a stat
+    // block, and placing the h2 here would leave it on a different page from
+    // the stat block, push the h2 to the next page so they stay together.
+    if(!hasBreakBefore && child.tagName === 'H2' && i + 1 < children.length){
+      const next = children[i + 1];
+      if(next.classList && next.classList.contains('stat-block')){
+        const nextRect = next.getBoundingClientRect();
+        const nextScreenTop = nextRect.top - docTop;
+        const gapToNext = Math.max(0, nextScreenTop - screenBottom);
+        const nextHeight = nextRect.height;
+
+        const h2EndPage = Math.floor((printY + childHeight - 1) / pageHeight);
+        const statTop = printY + childHeight + gapToNext;
+        const statStartPage = Math.floor(statTop / pageHeight);
+        const combined = childHeight + gapToNext + nextHeight;
+
+        if(h2EndPage !== statStartPage && combined <= pageHeight){
+          child.style.pageBreakBefore = 'always';
+          child.style.breakBefore = 'page';
+          const curPage = Math.floor((printY - 1) / pageHeight);
+          printY = (curPage + 1) * pageHeight;
+          appliedBreakHere = true;
+        }
+      }
+    }
+
+    if(!appliedBreakHere && child.classList.contains('stat-block') && childHeight <= pageHeight && !hasBreakBefore){
+      const topPage = Math.floor(printY / pageHeight);
+      const bottomPage = Math.floor((printY + childHeight - 1) / pageHeight);
+      if(topPage !== bottomPage){
+        child.style.pageBreakBefore = 'always';
+        child.style.breakBefore = 'page';
+        printY = (topPage + 1) * pageHeight;
+      }
+    }
+
+    printY += childHeight;
+    prevScreenBottom = screenBottom;
+  }
 }
 
 function switchTab(tab){
@@ -1614,7 +1788,17 @@ function wireEvents(){
   `;
   printPane.insertBefore(ctrls, printPane.firstChild);
   document.getElementById('back-from-print').addEventListener('click', () => switchTab('build'));
-  document.getElementById('do-print').addEventListener('click', () => window.print());
+  document.getElementById('do-print').addEventListener('click', () => {
+    renderPrintView();
+    window.print();
+  });
+
+  // Re-paginate against the current layout right before any print is taken
+  // (Ctrl+P, File → Print, etc.). beforeprint runs synchronously before the
+  // browser snapshots the page.
+  window.addEventListener('beforeprint', () => {
+    if(state.tab === 'print') renderPrintView();
+  });
 
   // Import pane wiring
   const importTextarea = document.getElementById('import-textarea');

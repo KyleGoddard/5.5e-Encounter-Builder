@@ -515,6 +515,7 @@ let MONSTERS = [];
 let MONSTER_MAP = {}; // name → raw creature data for stat block modal
 let SRD_NAMES = new Set(); // names of standard creatures — used to block deletion
 let IMPORTED_NAMES = new Set(); // names of user-imported creatures
+let LIB_NAMES = new Set();      // names of creatures loaded from lib/creatures/custom/
 const CUSTOM_STORAGE_KEY = 'encounterBuilder.customCreatures.v1';
 
 
@@ -563,6 +564,8 @@ async function loadMonsters() {
 
     // Merge any user-imported creatures from localStorage on top of the SRD set.
     loadCustomCreatures();
+    // Merge creatures from lib/creatures/custom/ on top of everything loaded so far.
+    await loadLibCreatures();
     
     // Initialize the app after loading
     populateFilterOptions();
@@ -1798,6 +1801,71 @@ function loadCustomCreatures(){
     }
   } catch(e){
     console.warn('Could not load custom creatures from localStorage:', e);
+  }
+}
+
+async function loadLibCreatures() {
+  const MANIFEST = 'lib/creatures/custom/index.json';
+  try {
+    const manifestResp = await fetch(MANIFEST);
+    if (!manifestResp.ok) return;
+    const filenames = await manifestResp.json();
+    if (!Array.isArray(filenames)) return;
+
+    const seen = new Set(Object.keys(MONSTER_MAP));
+    const crToVal = (cr) => {
+      const s = String(cr);
+      if (s.includes('/')) { const [a, b] = s.split('/'); return +a / +b; }
+      return +s;
+    };
+    let added = 0;
+
+    for (const filename of filenames) {
+      if (typeof filename !== 'string' || !filename.endsWith('.json')) continue;
+      try {
+        const resp = await fetch(`lib/creatures/custom/${filename}`);
+        if (!resp.ok) { console.warn(`lib/creatures/custom/${filename}: HTTP ${resp.status}`); continue; }
+        const data = await resp.json();
+
+        let arr;
+        if (Array.isArray(data)) arr = data;
+        else if (data && Array.isArray(data.monsters)) arr = data.monsters;
+        else if (data && typeof data === 'object' && data.name) arr = [data];
+        else { console.warn(`lib/creatures/custom/${filename}: unrecognized format`); continue; }
+
+        for (const c of arr) {
+          const r = validateCreature(c, seen);
+          if (r.ok) {
+            MONSTER_MAP[r.creature.name] = r.creature;
+            LIB_NAMES.add(r.creature.name);
+            MONSTERS.push({
+              name: r.creature.name,
+              size: r.creature.size,
+              type: r.creature.type,
+              subtype: r.creature.subtype || null,
+              alignment: r.creature.alignment,
+              cr: String(r.creature.cr),
+              crv: crToVal(r.creature.cr),
+              xp: parseInt(String(r.creature.xp).replace(/,/g, '')) || 0,
+              ac: r.creature.ac || null,
+              hp: r.creature.hp?.average || null,
+              hp_dice: r.creature.hp?.formula || null,
+              envs: getEnvironments(r.creature),
+            });
+            seen.add(r.creature.name);
+            added++;
+          } else {
+            console.warn(`lib/creatures/custom/${filename}: ${r.error}`);
+          }
+        }
+      } catch (e) {
+        console.warn(`Failed to load lib/creatures/custom/${filename}:`, e);
+      }
+    }
+
+    if (added > 0) console.log(`Loaded ${added} creatures from lib/creatures/custom/`);
+  } catch (e) {
+    console.warn('Could not load lib creatures manifest:', e);
   }
 }
 

@@ -1370,7 +1370,8 @@ function paginatePrintView(){
 
 // Split the combat tracker tbody into multiple tables, one per page worth of
 // rows. Each chunk carries its own thead (so headers repeat on every page) and
-// every chunk after the first gets a forced page break before it.
+// every chunk that doesn't naturally start at the tracker's original position
+// gets a forced page break before it.
 function splitTrackerForPrint(printDoc, pageHeight){
   const tracker = printDoc.querySelector('.tracker-table');
   if(!tracker) return;
@@ -1385,38 +1386,68 @@ function splitTrackerForPrint(printDoc, pageHeight){
   const trackerTop = tracker.getBoundingClientRect().top - docTop;
   const theadH = thead.getBoundingClientRect().height;
   const rowHeights = rows.map(r => r.getBoundingClientRect().height);
+  const rowH = new Map();
+  rows.forEach((r, i) => rowH.set(r, rowHeights[i]));
 
-  // The tracker may not start at the top of a page — figure out remaining room
-  // on its first page, then assume full pages thereafter.
+  // Remaining room on the tracker's initial page. If even thead + the first row
+  // don't fit there, push the whole tracker to a fresh page.
   const offsetInPage = ((trackerTop % pageHeight) + pageHeight) % pageHeight;
   let budget = pageHeight - offsetInPage;
+  let firstChunkOnNewPage = false;
+  if(theadH + rowHeights[0] > budget){
+    budget = pageHeight;
+    firstChunkOnNewPage = true;
+  }
   let used = theadH;
 
-  const chunks = [[]];
+  const chunks = [{ rows: [], breakBefore: firstChunkOnNewPage }];
+
   for(let i = 0; i < rows.length; i++){
+    const row = rows[i];
     const h = rowHeights[i];
-    if(used + h > budget && chunks[chunks.length - 1].length > 0){
-      chunks.push([]);
-      used = theadH;
+    let lastChunk = chunks[chunks.length - 1];
+
+    if(used + h > budget && lastChunk.rows.length > 0){
+      const lastRow = lastChunk.rows[lastChunk.rows.length - 1];
+      const splittingGroup =
+        row.classList.contains('tracker-row-group') &&
+        lastRow && lastRow.classList.contains('group-header-row');
+
+      if(splittingGroup){
+        // Don't strand the "Goblin × 5" header at the bottom of a page with
+        // no body rows under it — move it forward to the new chunk.
+        lastChunk.rows.pop();
+        chunks.push({ rows: [lastRow], breakBefore: true });
+        used = theadH + rowH.get(lastRow);
+      } else {
+        chunks.push({ rows: [], breakBefore: true });
+        used = theadH;
+      }
       budget = pageHeight;
+      lastChunk = chunks[chunks.length - 1];
     }
-    chunks[chunks.length - 1].push(rows[i]);
+
+    lastChunk.rows.push(row);
     used += h;
   }
 
-  if(chunks.length <= 1) return;
+  // Moving a group header out of its original chunk can leave that chunk empty.
+  const finalChunks = chunks.filter(c => c.rows.length > 0);
+  if(finalChunks.length === 0) return;
+  // Nothing to do if the tracker fits naturally where it was.
+  if(finalChunks.length === 1 && !finalChunks[0].breakBefore) return;
 
   const parent = tracker.parentNode;
-  chunks.forEach((chunkRows, idx) => {
+  finalChunks.forEach(chunk => {
     const newTable = document.createElement('table');
     newTable.className = tracker.className;
-    if(idx > 0){
+    if(chunk.breakBefore){
       newTable.style.pageBreakBefore = 'always';
       newTable.style.breakBefore = 'page';
     }
     newTable.appendChild(thead.cloneNode(true));
     const newTbody = document.createElement('tbody');
-    chunkRows.forEach(r => newTbody.appendChild(r));
+    chunk.rows.forEach(r => newTbody.appendChild(r));
     newTable.appendChild(newTbody);
     parent.insertBefore(newTable, tracker);
   });
